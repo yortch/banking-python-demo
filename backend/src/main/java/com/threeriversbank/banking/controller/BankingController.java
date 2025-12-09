@@ -3,7 +3,9 @@ package com.threeriversbank.banking.controller;
 import com.threeriversbank.banking.dto.TransferRequest;
 import com.threeriversbank.banking.model.Account;
 import com.threeriversbank.banking.model.Transaction;
-import com.threeriversbank.banking.service.BankingService;
+import com.threeriversbank.banking.service.AccountService;
+import com.threeriversbank.banking.service.TransactionService;
+import com.threeriversbank.banking.service.TransferService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,17 +23,23 @@ import java.util.Map;
 @Tag(name = "Banking", description = "Banking operations API for account management and transactions")
 public class BankingController {
     
-    private final BankingService bankingService;
+    private final AccountService accountService;
+    private final TransactionService transactionService;
+    private final TransferService transferService;
     
-    public BankingController(BankingService bankingService) {
-        this.bankingService = bankingService;
+    public BankingController(AccountService accountService, 
+                           TransactionService transactionService,
+                           TransferService transferService) {
+        this.accountService = accountService;
+        this.transactionService = transactionService;
+        this.transferService = transferService;
     }
     
     @GetMapping("/accounts")
     @Operation(summary = "Get all accounts", description = "Retrieve a list of all bank accounts")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list of accounts")
     public ResponseEntity<List<Account>> getAllAccounts() {
-        return ResponseEntity.ok(bankingService.getAllAccounts());
+        return ResponseEntity.ok(accountService.getAllAccounts());
     }
     
     @GetMapping("/accounts/{accountNumber}")
@@ -44,7 +52,7 @@ public class BankingController {
             @Parameter(description = "Account number to retrieve", required = true)
             @PathVariable String accountNumber) {
         try {
-            return ResponseEntity.ok(bankingService.getAccountByNumber(accountNumber));
+            return ResponseEntity.ok(accountService.getAccountByNumber(accountNumber));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
@@ -56,7 +64,7 @@ public class BankingController {
     public ResponseEntity<List<Transaction>> getTransactions(
             @Parameter(description = "Account number to get transactions for", required = true)
             @PathVariable String accountNumber) {
-        return ResponseEntity.ok(bankingService.getTransactionsByAccountNumber(accountNumber));
+        return ResponseEntity.ok(transactionService.getTransactionsByAccountNumber(accountNumber));
     }
     
     @PostMapping("/transfer")
@@ -72,7 +80,7 @@ public class BankingController {
             String description = transferRequest.getDescription() != null ? 
                 transferRequest.getDescription() : "Transfer";
             
-            Transaction transaction = bankingService.transferBetweenAccounts(
+            Transaction transaction = transferService.transferBetweenAccounts(
                 transferRequest.getFromAccount(), 
                 transferRequest.getToAccount(), 
                 transferRequest.getAmount(), 

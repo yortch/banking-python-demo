@@ -1,7 +1,9 @@
 package com.threeriversbank.banking.controller;
 
 import com.threeriversbank.banking.model.Account;
-import com.threeriversbank.banking.service.BankingService;
+import com.threeriversbank.banking.service.AccountService;
+import com.threeriversbank.banking.service.TransactionService;
+import com.threeriversbank.banking.service.TransferService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,7 +26,13 @@ class BankingControllerTest {
     private MockMvc mockMvc;
     
     @MockBean
-    private BankingService bankingService;
+    private AccountService accountService;
+    
+    @MockBean
+    private TransactionService transactionService;
+    
+    @MockBean
+    private TransferService transferService;
     
     @Test
     void testGetAllAccounts() throws Exception {
@@ -32,7 +40,7 @@ class BankingControllerTest {
         Account account2 = new Account("2001234567", "Savings", new BigDecimal("10000.00"), "John Doe");
         List<Account> accounts = Arrays.asList(account1, account2);
         
-        when(bankingService.getAllAccounts()).thenReturn(accounts);
+        when(accountService.getAllAccounts()).thenReturn(accounts);
         
         mockMvc.perform(get("/api/accounts")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -45,7 +53,7 @@ class BankingControllerTest {
     void testGetAccountByNumber() throws Exception {
         Account account = new Account("1001234567", "Checking", new BigDecimal("5000.00"), "John Doe");
         
-        when(bankingService.getAccountByNumber("1001234567")).thenReturn(account);
+        when(accountService.getAccountByNumber("1001234567")).thenReturn(account);
         
         mockMvc.perform(get("/api/accounts/1001234567")
                 .contentType(MediaType.APPLICATION_JSON))

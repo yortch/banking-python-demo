@@ -36,12 +36,24 @@ banking-python-demo/
 │   │   │   │       ├── BankingApplication.java
 │   │   │   │       ├── config/
 │   │   │   │       ├── controller/
+│   │   │   │       ├── dto/
+│   │   │   │       ├── exception/
 │   │   │   │       ├── model/
 │   │   │   │       ├── repository/
 │   │   │   │       └── service/
+│   │   │   │           ├── AccountService.java
+│   │   │   │           ├── TransactionService.java
+│   │   │   │           └── TransferService.java
 │   │   │   └── resources/
 │   │   │       └── application.properties
 │   │   └── test/
+│   │       └── java/
+│   │           └── com/threeriversbank/banking/
+│   │               ├── controller/
+│   │               └── service/
+│   │                   ├── AccountServiceTest.java
+│   │                   ├── TransactionServiceTest.java
+│   │                   └── TransferServiceTest.java
 │   └── pom.xml
 └── frontend/                   # Python Streamlit frontend
     ├── app.py
@@ -143,11 +155,46 @@ cd backend
 mvn test
 ```
 
+## Architecture
+
+### Service Layer Design
+
+The backend follows a **domain-driven design** with modular services organized by business domain:
+
+#### **AccountService**
+- Manages account-related operations
+- Handles account retrieval (all accounts, single account)
+- Manages account balance updates
+- Ensures account business rules are enforced
+
+#### **TransactionService**
+- Manages transaction-related operations
+- Records new transactions
+- Retrieves transaction history
+- Maintains transaction audit trail
+
+#### **TransferService**
+- Orchestrates fund transfer operations
+- Coordinates between `AccountService` and `TransactionService`
+- Ensures transactional integrity (ACID properties)
+- Validates transfer business rules:
+  - Positive amount validation
+  - Sufficient funds verification
+  - Account existence validation
+
+This modular architecture provides:
+- ✅ **Separation of Concerns**: Each service has a single, well-defined responsibility
+- ✅ **Testability**: Services can be independently unit tested with mocked dependencies
+- ✅ **Maintainability**: Changes to one domain don't affect others
+- ✅ **Scalability**: Services can be easily extended or modified
+- ✅ **Reusability**: Services can be composed in different ways
+
 ## Development Notes
 
 - The application simulates a logged-in user (John Doe) without requiring authentication
 - All data is stored in an H2 in-memory database and will be reset when the backend restarts
 - CORS is enabled on the backend to allow frontend communication
+- The service layer uses Spring's `@Transactional` annotation to ensure data consistency
 
 ## Future Enhancements
 
