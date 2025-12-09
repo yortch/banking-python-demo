@@ -56,8 +56,27 @@ banking-python-demo/
 │   │                   └── TransferServiceTest.java
 │   └── pom.xml
 └── frontend/                   # Python Streamlit frontend
-    ├── app.py
-    └── requirements.txt
+    ├── app.py                  # Main application entry point
+    ├── requirements.txt
+    ├── config/                 # Configuration module
+    │   ├── __init__.py
+    │   └── settings.py         # Application settings and constants
+    ├── services/               # Service layer module
+    │   ├── __init__.py
+    │   └── api_client.py       # API communication logic
+    ├── components/             # UI components module
+    │   ├── __init__.py
+    │   ├── styles.py           # CSS styling definitions
+    │   └── header.py           # Header and navigation components
+    ├── views/                  # View modules (renamed from pages to avoid Streamlit auto-navigation)
+    │   ├── __init__.py
+    │   ├── dashboard.py        # Dashboard view
+    │   ├── account_details.py  # Account details view
+    │   ├── transactions.py     # Transaction history view
+    │   └── transfer.py         # Transfer funds view
+    └── utils/                  # Utility functions module
+        ├── __init__.py
+        └── formatters.py       # Data formatting utilities
 ```
 
 ## Getting Started
@@ -157,7 +176,7 @@ mvn test
 
 ## Architecture
 
-### Service Layer Design
+### Backend Service Layer Design
 
 The backend follows a **domain-driven design** with modular services organized by business domain:
 
@@ -188,6 +207,53 @@ This modular architecture provides:
 - ✅ **Maintainability**: Changes to one domain don't affect others
 - ✅ **Scalability**: Services can be easily extended or modified
 - ✅ **Reusability**: Services can be composed in different ways
+
+### Frontend Modular Design
+
+The frontend follows a **modular architecture** organized by functionality and domain:
+
+#### **Configuration Layer** (`config/`)
+- **settings.py**: Centralized application configuration
+  - API endpoints
+  - User settings
+  - Application constants
+
+#### **Service Layer** (`services/`)
+- **api_client.py**: Backend API communication
+  - Account retrieval
+  - Transaction queries
+  - Fund transfers
+  - Error handling and response parsing
+
+#### **Component Layer** (`components/`)
+- **styles.py**: CSS styling definitions and application logic
+- **header.py**: Reusable UI components (header, user info, sidebar footer)
+
+#### **View Layer** (`views/`)
+- **dashboard.py**: Account overview and total balance
+- **account_details.py**: Detailed account information
+- **transactions.py**: Transaction history display
+- **transfer.py**: Inter-account fund transfers
+- Note: Renamed from `pages/` to avoid Streamlit's automatic page navigation feature
+
+#### **Utility Layer** (`utils/`)
+- **formatters.py**: Data transformation utilities
+  - Currency formatting
+  - Date/time formatting
+  - Transaction data processing
+
+#### **Application Entry Point** (`app.py`)
+- Page configuration and initialization
+- Navigation routing
+- Component orchestration
+
+This modular frontend architecture provides:
+- ✅ **Separation of Concerns**: UI logic separated from business logic and API communication
+- ✅ **Reusability**: Components and utilities can be shared across pages
+- ✅ **Maintainability**: Easy to locate and modify specific functionality
+- ✅ **Testability**: Each module can be tested independently
+- ✅ **Scalability**: New features can be added as new modules without affecting existing code
+- ✅ **Consistency**: Mirrors the modular pattern of the backend architecture
 
 ## Development Notes
 
