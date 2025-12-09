@@ -1,11 +1,20 @@
 package com.threeriversbank.banking.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 
+@Schema(description = "Request object for transferring funds between accounts")
 public class TransferRequest {
+    @Schema(description = "Source account number", example = "ACC001", required = true)
     private String fromAccount;
+    
+    @Schema(description = "Destination account number", example = "ACC002", required = true)
     private String toAccount;
+    
+    @Schema(description = "Transfer amount", example = "100.00", required = true)
     private BigDecimal amount;
+    
+    @Schema(description = "Optional transfer description", example = "Monthly payment")
     private String description;
     
     public TransferRequest() {

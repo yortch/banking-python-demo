@@ -1,26 +1,33 @@
 package com.threeriversbank.banking.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "accounts")
+@Schema(description = "Bank account entity")
 public class Account {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Account ID", example = "1")
     private Long id;
     
     @Column(nullable = false, unique = true)
+    @Schema(description = "Unique account number", example = "ACC001")
     private String accountNumber;
     
     @Column(nullable = false)
+    @Schema(description = "Type of account", example = "Checking")
     private String accountType;
     
     @Column(nullable = false)
+    @Schema(description = "Current account balance", example = "5000.00")
     private BigDecimal balance;
     
     @Column(nullable = false)
+    @Schema(description = "Name of the account holder", example = "John Smith")
     private String customerName;
     
     public Account() {
