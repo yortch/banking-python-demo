@@ -3,8 +3,9 @@ import requests
 import pandas as pd
 from datetime import datetime
 
-# API Base URL
-API_BASE_URL = "http://localhost:8080/api"
+# API Base URL - can be overridden via environment variable
+import os
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8080/api")
 
 # Simulated logged-in user
 LOGGED_IN_USER = "John Doe"

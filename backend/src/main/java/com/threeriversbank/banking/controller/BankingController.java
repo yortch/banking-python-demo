@@ -1,18 +1,18 @@
 package com.threeriversbank.banking.controller;
 
+import com.threeriversbank.banking.dto.TransferRequest;
 import com.threeriversbank.banking.model.Account;
 import com.threeriversbank.banking.model.Transaction;
 import com.threeriversbank.banking.service.BankingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "${cors.allowed.origins:http://localhost:8501}")
 public class BankingController {
     
     private final BankingService bankingService;
@@ -41,14 +41,17 @@ public class BankingController {
     }
     
     @PostMapping("/transfer")
-    public ResponseEntity<?> transfer(@RequestBody Map<String, String> transferRequest) {
+    public ResponseEntity<?> transfer(@RequestBody TransferRequest transferRequest) {
         try {
-            String fromAccount = transferRequest.get("fromAccount");
-            String toAccount = transferRequest.get("toAccount");
-            BigDecimal amount = new BigDecimal(transferRequest.get("amount"));
-            String description = transferRequest.getOrDefault("description", "Transfer");
+            String description = transferRequest.getDescription() != null ? 
+                transferRequest.getDescription() : "Transfer";
             
-            Transaction transaction = bankingService.transferBetweenAccounts(fromAccount, toAccount, amount, description);
+            Transaction transaction = bankingService.transferBetweenAccounts(
+                transferRequest.getFromAccount(), 
+                transferRequest.getToAccount(), 
+                transferRequest.getAmount(), 
+                description
+            );
             return ResponseEntity.ok(transaction);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
